@@ -2,8 +2,8 @@ import pymysql
 import pandas as pd
 
 # MySQL 연결 정보
-host = "localhost"  # MySQL 서버 주소
-user = "root"       # MySQL 사용자명
+host = "20.22.123.203"  # MySQL 서버 주소
+user = "water"       # MySQL 사용자명
 password = "1111"  # MySQL 비밀번호
 database = "weather_db"  # 사용할 데이터베이스
 charset="utf8mb4"
@@ -31,10 +31,19 @@ plt.rc("font", family="Malgun Gothic")
 plt.rcParams["axes.unicode_minus"] = False
 
 # "T1H" 데이터만 필터링
-df_temp = df[df["종류"] == "T1H"]
+df_temp = df[df["종류"] == "T1H"].copy()
 
-# 날짜/시간 변환
-df_temp["datetime"] = pd.to_datetime(df_temp["날짜"].astype(str) + df_temp["시간"], format="%Y-%m-%d%H%M")
+# 시간 컬럼 정리: "0 days 00:00:46" → "00:00:46"
+df_temp["시간"] = df_temp["시간"].astype(str).str.extract(r'(\d{2}:\d{2}:\d{2})')
+
+# 날짜 + 시간 → datetime 변환
+df_temp["datetime"] = pd.to_datetime(
+    df_temp["날짜"].astype(str) + " " + df_temp["시간"],
+    format="%Y-%m-%d %H:%M:%S"
+)
+
+
+
 
 # 그래프 그리기
 plt.figure(figsize=(10, 5))
