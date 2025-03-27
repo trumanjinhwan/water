@@ -2,9 +2,9 @@ import pymysql
 import pandas as pd
 
 # MySQL 연결 정보
-host = "localhost"  # MySQL 서버 주소
+host = "61.43.3.122"  # MySQL 서버 주소
 user = "water"       # MySQL 사용자명
-password = "1111"  # MySQL 비밀번호
+password = "water1111"  # MySQL 비밀번호
 database = "weather_db"  # 사용할 데이터베이스
 charset="utf8mb4"
 

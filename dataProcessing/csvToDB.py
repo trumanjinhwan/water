@@ -5,11 +5,11 @@ import pymysql
 df = pd.read_csv("weather_sample.csv")
 
 # MySQL 연결 정보
-host = "localhost"  # MySQL 서버 주소
-user = "water"          # MySQL 사용자명
-password = "1111"       # MySQL 비밀번호
-database = "weather_db" # 사용할 데이터베이스
-charset = "utf8mb4"
+host = "www.lifeslike.org"  # MySQL 서버 주소
+user = "water"       # MySQL 사용자명
+password = "water1111"  # MySQL 비밀번호
+database = "weather_db"  # 사용할 데이터베이스
+charset="utf8mb4"
 
 # MySQL 연결
 conn = pymysql.connect(host=host, user=user, password=password, database=database, charset=charset, use_unicode=True)

@@ -1,10 +1,11 @@
+// src/App.js
 import React from "react";
-import MapComponent from "./components/MapComponent.js";
+import MapComponent from "./components/NaverMapComponent";
 
 function App() {
   return (
     <div>
-      <h1>수질 & 침수 예측 연습</h1>
+      <h1>소양강 주변 오염원 지도 시각화</h1>
       <MapComponent />
     </div>
   );
