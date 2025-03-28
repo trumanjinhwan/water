@@ -17,6 +17,7 @@ import java.util.*;
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api/naver")
+//http://localhost:8080/api/naver/search?query=소양강 근처 주유소
 public class NaverPlaceController {
 
     private final String CLIENT_ID = "FPAwVEmmUu52Kt3TVGXG";
