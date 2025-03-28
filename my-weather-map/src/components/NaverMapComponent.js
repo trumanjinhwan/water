@@ -10,7 +10,8 @@ const NaverMapComponent = () => {
     const keywords = ["소양강 주유소", "소양강 공장", "소양강 아파트", "소양강 주택"];
 
     keywords.forEach((keyword) => {
-      fetch(`http://localhost:8080/api/naver/search?query=${keyword}`)
+      //fetch(`http://localhost:8080/api/naver/search?query=${keyword}`)
+      fetch(`https://www.lifeslike.org/api/naver/search?query=${keyword}`)
         .then((res) => res.json())
         .then((data) => {
           data.forEach((place) => {
