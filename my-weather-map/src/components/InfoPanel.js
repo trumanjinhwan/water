@@ -146,7 +146,8 @@ export const InfoPanel = () => {
         <div
           className="image-wrapper"
           style={{
-            left: isVisible ? "298px" : "-30px",
+            left: isVisible ? "258px" : "-30px",
+            top: 80
           }}
         >
           <button onClick={togglePanel}>

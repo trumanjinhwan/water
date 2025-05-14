@@ -22,11 +22,11 @@
   background-color: #ffffff;
   border-radius: 15px;
   height: 480px;
-  left: -65px;
+  left: -85px;
   position: absolute;
-  top: -70px;
+  top: -127px;
   width: 439px;
-  transform: scale(0.7); /* 원하는 배율로 조절 (예: 0.75 = 75% 크기) */
+  transform: scale(0.6);
 }
 
 .box .text-wrapper {
