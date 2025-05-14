@@ -1,0 +1,250 @@
+.box {
+  height: 440px;
+  position: relative;
+  width: 477px;
+}
+
+/* 패널 + 버튼 수평 정렬 */
+.panel-wrapper {
+  display: flex;
+  align-items: flex-end;
+}
+
+.box .view {
+  height: 20px;
+  left: 0;
+  position: fixed;
+  top: 0;
+  width: 477px;
+}
+
+.box .div {
+  background-color: #ffffff;
+  border-radius: 15px;
+  height: 480px;
+  left: -65px;
+  position: absolute;
+  top: -70px;
+  width: 439px;
+  transform: scale(0.7); /* 원하는 배율로 조절 (예: 0.75 = 75% 크기) */
+}
+
+.box .text-wrapper {
+  color: #000000;
+  font-family: "Inter-SemiBold", Helvetica;
+  font-size: 25px;
+  font-weight: 600;
+  left: 20px;
+  letter-spacing: 0;
+  line-height: normal;
+  position: absolute;
+  top: 18px;
+  white-space: nowrap;
+  width: 157px;
+}
+
+.box .image {
+  height: 2px;
+  left: 20px;
+  object-fit: cover;
+  position: absolute;
+  top: 73px;
+  width: 380px;
+}
+
+.box .view-2 {
+  height: 265px;
+  left: 30px;
+  position: absolute;
+  top: 114px;
+  width: 341px;
+}
+
+/* 기온 입력 */
+.box .overlap-group {
+  height: 46px;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 300px;
+}
+
+.box .element {
+  height: 46px;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 244px;
+}
+
+.box .view-3 {
+  background-color: #f5f5f5;
+  font-size: larger;
+  border-radius: 5px;
+  height: 46px;
+  left: 110px;
+  position: absolute;
+  top: 0;
+  width: 132px;
+  text-align: center; /* ✨ 추가: 텍스트 중앙 정렬 */
+}
+
+.box .text-wrapper-2 {
+  color: #000000;
+  font-family: "Inter-SemiBold", Helvetica;
+  font-size: 25px;
+  font-weight: 600;
+  left: 0;
+  letter-spacing: 0;
+  line-height: normal;
+  position: absolute;
+  text-align: center;
+  top: 8px;
+  white-space: nowrap;
+  width: 110px;
+}
+
+.box .text-wrapper-3 {
+  color: #000000;
+  font-family: "Inter-SemiBold", Helvetica;
+  font-size: 25px;
+  font-weight: 600;
+  left: 225px;
+  letter-spacing: 0;
+  line-height: normal;
+  position: absolute;
+  text-align: center;
+  top: 7px;
+  width: 80px;
+}
+
+/* 강수량 */
+.box .element-2 {
+  height: 46px;
+  left: 0;
+  position: absolute;
+  top: 73px;
+  width: 244px;
+}
+
+.box .text-wrapper-5 {
+  color: #000000;
+  font-family: "Inter-SemiBold", Helvetica;
+  font-size: 25px;
+  font-weight: 600;
+  left: 252px;
+  letter-spacing: 0;
+  line-height: normal;
+  position: absolute;
+  text-align: center;
+  top: 80px;
+  white-space: nowrap;
+}
+
+/* 습도 */
+.box .element-3 {
+  height: 46px;
+  left: 0;
+  position: absolute;
+  top: 146px;
+  width: 244px;
+}
+
+.box .text-wrapper-6 {
+  color: #000000;
+  font-family: "Inter-SemiBold", Helvetica;
+  font-size: 25px;
+  font-weight: 600;
+  left: 253px;
+  letter-spacing: 0;
+  line-height: normal;
+  position: absolute;
+  text-align: center;
+  top: 159px;
+  white-space: nowrap;
+}
+
+/* 풍속 */
+.box .overlap {
+  height: 46px;
+  left: 0;
+  position: absolute;
+  top: 219px;
+  width: 288px;
+}
+
+.box .text-wrapper-4 {
+  color: #000000;
+  font-family: "Inter-SemiBold", Helvetica;
+  font-size: 25px;
+  font-weight: 600;
+  left: 253px;
+  letter-spacing: 0;
+  line-height: normal;
+  position: absolute;
+  text-align: center;
+  top: 7px;
+  white-space: nowrap;
+}
+
+.image-wrapper {
+  background-color: #ffffff;
+  border-radius: 5px;
+  width: 38px;
+  height: 87px;
+  position: absolute;
+  top: 118px;
+  /* left는 JSX에서 동적으로 지정함 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: scale(0.7);
+  transition: left 0.3s ease; /* ← 부드러운 이동 애니메이션 */
+}
+
+.image-wrapper button {
+  all: unset;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+/* 화살표 이미지 스타일 */
+.img {
+  width: 18px;
+  height: 21px;
+  transition: transform 0.3s ease;
+}
+
+/* ▶ 보일 때 */
+.img.open {
+  transform: scaleX(1);
+}
+
+/* ◀ 접힐 때 */
+.img.closed {
+  transform: scaleX(-1);
+}
+
+.submit-button {
+  margin-top: 20px;
+  width: 30%;
+  padding: 10px;
+  background-color: #18a0fb;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  position: relative;
+  top: 277px;
+  left: 120px
+}
+
+.submit-button:hover {
+  background-color: #0d8ae2;
+}
