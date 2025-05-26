@@ -7,6 +7,7 @@ const App = () => {
   const [showDEM, setShowDEM] = useState(false);
   const [showWatershed, setShowWatershed] = useState(false);
   const [showPollution, setShowPollution] = useState(false);
+  const [showTerrain, setShowTerrain] = useState(false);
 
   return (
     <div style={{ position: "relative", width: "100%", height: "100vh" }}>
@@ -14,6 +15,7 @@ const App = () => {
         showDEM={showDEM}
         showWatershed={showWatershed}
         showPollution={showPollution}
+        showTerrain={showTerrain}
       />
 
       <div style={{ position: "absolute", top: 20, left: 20, zIndex: 1000 }}>
@@ -21,6 +23,7 @@ const App = () => {
           onToggleDEM={setShowDEM}
           onToggleWatershed={setShowWatershed}
           onTogglePollution={setShowPollution}
+          onToggleTerrain={setShowTerrain}
         />
       </div>
 

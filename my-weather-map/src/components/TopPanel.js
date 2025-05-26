@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import "./TopPanel.css";
 
-export const TopPanel = ({ onToggleDEM, onToggleWatershed, onTogglePollution }) => {
+export const TopPanel = ({ onToggleDEM, onToggleWatershed, onTogglePollution, onToggleTerrain }) => {
   const [showDEM, setShowDEM] = useState(false);
   const [showWatershed, setShowWatershed] = useState(false);
   const [showPollution, setShowPollution] = useState(false);
+  const [showTerrain, setShowTerrain] = useState(false);
 
   return (
     <div className="top-panel">
@@ -63,13 +64,17 @@ export const TopPanel = ({ onToggleDEM, onToggleWatershed, onTogglePollution }) 
           오염원 보기
         </label>
 
-
-        {[...Array(2)].map((_, i) => (
-          <div className="feature" key={i}>
-            <div className="feature-circle" />
-            세부기능
-          </div>
-        ))}
+        <label className="feature">
+          <input
+            type="checkbox"
+            checked={showTerrain}
+            onChange={(e) => {
+              setShowTerrain(e.target.checked);
+              onToggleTerrain(e.target.checked);
+            }}
+          />
+          위성지도
+        </label>
       </div>
     </div>
   );

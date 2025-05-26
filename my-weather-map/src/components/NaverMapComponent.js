@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 
-const NaverMapComponent = ({ showDEM, showWatershed, showPollution }) => {
+const NaverMapComponent = ({ showDEM, showWatershed, showPollution, showTerrain }) => {
   const [geoJsonData, setGeoJsonData] = useState(null);
   const [watershedPolygons, setWatershedPolygons] = useState([]);
   const [pollutionMarkers, setPollutionMarkers] = useState([]);
@@ -12,9 +12,22 @@ const NaverMapComponent = ({ showDEM, showWatershed, showPollution }) => {
     const map = new window.naver.maps.Map("map", {
       center: new window.naver.maps.LatLng(37.926, 127.75),
       zoom: 13,
+      mapTypeId: window.naver.maps.MapTypeId.NORMAL, // 초기값
     });
     mapRef.current = map;
   }, []);
+
+  // 2. 지형지도 on/off에 따른 타입 변경 useEffect
+useEffect(() => {
+  if (!mapRef.current) return;
+
+  mapRef.current.setMapTypeId(
+    showTerrain
+      ? window.naver.maps.MapTypeId.HYBRID
+      : window.naver.maps.MapTypeId.NORMAL
+  );
+}, [showTerrain]);
+
 
   useEffect(() => {
     const drawWatershed = async () => {
