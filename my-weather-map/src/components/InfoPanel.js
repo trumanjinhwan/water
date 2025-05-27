@@ -5,8 +5,6 @@ import "./InfoPanel.css";
 
 export const InfoPanel = () => {
   const [isVisible, setIsVisible] = useState(true);
-
-  // 입력값 상태 선언
   const [temperature, setTemperature] = useState("");
   const [rainfall, setRainfall] = useState("");
   const [humidity, setHumidity] = useState("");
@@ -17,7 +15,6 @@ export const InfoPanel = () => {
   };
 
   const handleSubmit = () => {
-    // 빈 값 체크
     if (!temperature.trim()) {
       alert("기온을 입력해주세요.");
       document.getElementById("temperature-input").focus();
@@ -38,8 +35,7 @@ export const InfoPanel = () => {
       document.getElementById("windspeed-input").focus();
       return;
     }
-  
-    // 숫자인지 확인 (NaN 체크)
+
     if (isNaN(Number(temperature))) {
       alert("기온을 숫자로 입력하세요.");
       setTemperature("");
@@ -53,7 +49,7 @@ export const InfoPanel = () => {
       return;
     }
     if (isNaN(Number(humidity))) {
-      alert("습도을 숫자로 입력하세요.");
+      alert("습도를 숫자로 입력하세요.");
       setHumidity("");
       document.getElementById("humidity-input").focus();
       return;
@@ -64,70 +60,40 @@ export const InfoPanel = () => {
       document.getElementById("windspeed-input").focus();
       return;
     }
-  
-    // 유효성 통과 시 로그 출력
-    console.log(`
-                 기온: ${temperature}
-                 강수량: ${rainfall}
-                 습도: ${humidity}
-                 풍속: ${windspeed}`);
+
+    console.log(`기온: ${temperature}, 강수량: ${rainfall}, 습도: ${humidity}, 풍속: ${windspeed}`);
   };
-  
 
   return (
     <div className="box">
       <div className="panel-wrapper">
         {isVisible && (
-          <div className="div">
+          <div className="div weather-form">
             <div className="text-wrapper">날씨 정보 입력</div>
             <img className="image" alt="Image" src={image2} />
 
             <div className="view-2">
               <div className="overlap-group">
                 <div className="element">
-                  <input
-                    id="temperature-input"
-                    type="text"
-                    className="view-3"
-                    value={temperature}
-                    onChange={(e) => setTemperature(e.target.value)}
-                  />
+                  <input id="temperature-input" type="text" className="view-3" value={temperature} onChange={(e) => setTemperature(e.target.value)} />
                   <div className="text-wrapper-2">기온</div>
                 </div>
                 <div className="text-wrapper-3">℃</div>
               </div>
 
               <div className="element-2">
-                <input
-                  id="rainfall-input"
-                  type="text"
-                  className="view-3"
-                  value={rainfall}
-                  onChange={(e) => setRainfall(e.target.value)}
-                />
+                <input id="rainfall-input" type="text" className="view-3" value={rainfall} onChange={(e) => setRainfall(e.target.value)} />
                 <div className="text-wrapper-2">강수량</div>
               </div>
 
               <div className="element-3">
-                <input
-                  id="humidity-input"
-                  type="text"
-                  className="view-3"
-                  value={humidity}
-                  onChange={(e) => setHumidity(e.target.value)}
-                />
+                <input id="humidity-input" type="text" className="view-3" value={humidity} onChange={(e) => setHumidity(e.target.value)} />
                 <div className="text-wrapper-2">습도</div>
               </div>
 
               <div className="overlap">
                 <div className="element">
-                  <input
-                    id="windspeed-input"
-                    type="text"
-                    className="view-3"
-                    value={windspeed}
-                    onChange={(e) => setWindspeed(e.target.value)}
-                  />
+                  <input id="windspeed-input" type="text" className="view-3" value={windspeed} onChange={(e) => setWindspeed(e.target.value)} />
                   <div className="text-wrapper-2">풍속</div>
                 </div>
                 <div className="text-wrapper-4">m/s</div>
@@ -136,26 +102,14 @@ export const InfoPanel = () => {
               <div className="text-wrapper-5">mm</div>
               <div className="text-wrapper-6">%</div>
 
-              <button className="submit-button" onClick={handleSubmit}>
-                입력하기
-              </button>
+              <button className="submit-button" onClick={handleSubmit}>입력하기</button>
             </div>
           </div>
         )}
 
-        <div
-          className="image-wrapper"
-          style={{
-            left: isVisible ? "258px" : "-30px",
-            top: 80
-          }}
-        >
+        <div className="image-wrapper" style={{ left: isVisible ? "258px" : "-30px", top: 20 }}>
           <button onClick={togglePanel}>
-            <img
-              className={`img ${isVisible ? "open" : "closed"}`}
-              alt="Toggle"
-              src={image}
-            />
+            <img className={`img ${isVisible ? "open" : "closed"}`} alt="Toggle" src={image} />
           </button>
         </div>
       </div>

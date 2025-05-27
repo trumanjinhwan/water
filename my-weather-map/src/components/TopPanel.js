@@ -8,7 +8,7 @@ export const TopPanel = ({ onToggleDEM, onToggleWatershed, onTogglePollution, on
   const [showTerrain, setShowTerrain] = useState(false);
 
   return (
-    <div className="top-panel">
+    <div className="top-panel top-toggle-buttons">
       <div className="top-row">
         <button className="logo-button">
           <div className="circle" />
@@ -18,15 +18,8 @@ export const TopPanel = ({ onToggleDEM, onToggleWatershed, onTogglePollution, on
         <button className="main-button">주제도 찾기</button>
       </div>
 
-      <div className="search-row">
-        <select className="dropdown">
-          <option>주제도</option>
-        </select>
-        <div className="search-icon" />
-      </div>
-
       <div className="features">
-        <label className="feature">
+        <label className="feature checkbox-dem"> {/* ✅ 클래스 위치 변경 */}
           <input
             type="checkbox"
             checked={showDEM}
@@ -38,24 +31,19 @@ export const TopPanel = ({ onToggleDEM, onToggleWatershed, onTogglePollution, on
           DEM 보기
         </label>
 
+
         <label className="feature">
           <input
             type="checkbox"
             checked={showPollution}
             onChange={(e) => {
               const checked = e.target.checked;
-
               setShowPollution(checked);
               onTogglePollution(checked);
-
-              // ✅ 함께 유역도 활성화
               if (checked) {
                 setShowWatershed(true);
                 onToggleWatershed(true);
-              }
-
-              // 오염원 끄면 유역도도 같이 끔
-              if (!checked) {
+              } else {
                 setShowWatershed(false);
                 onToggleWatershed(false);
               }
