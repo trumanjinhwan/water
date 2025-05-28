@@ -18,7 +18,7 @@ const App = () => {
     // },
     {
       target: ".top-toggle-buttons", // ✅ 상단 전체 버튼 영역
-      content: "DEM과 오염원 보기, 위성 지도 기능을 선택할 수 있어요.",
+      content: "DEM과 오염원, 하천 유역, 위성 지도 기능을 선택할 수 있어요.",
       placement: "bottom",
       spotlightPadding: 20, // 옵션: 영역을 더 넓게 강조하고 싶을 때
     },
@@ -65,7 +65,13 @@ const App = () => {
           onToggleWatershed={setShowWatershed}
           onTogglePollution={setShowPollution}
           onToggleTerrain={setShowTerrain}
+          showDEM={showDEM}
+          showWatershed={showWatershed}
+          showPollution={showPollution}
+          showTerrain={showTerrain}
         />
+
+
       </div>
 
       <div style={{ position: "absolute", top: 200, left: 20, zIndex: 1000 }}>

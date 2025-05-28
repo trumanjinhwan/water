@@ -107,7 +107,7 @@ export const InfoPanel = () => {
           </div>
         )}
 
-        <div className="image-wrapper" style={{ left: isVisible ? "258px" : "-30px", top: 20 }}>
+        <div className="image-wrapper" style={{ left: isVisible ? "258px" : "-30px", top: "30px" }}>
           <button onClick={togglePanel}>
             <img className={`img ${isVisible ? "open" : "closed"}`} alt="Toggle" src={image} />
           </button>

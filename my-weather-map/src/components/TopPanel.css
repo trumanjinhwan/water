@@ -99,4 +99,23 @@
     border-radius: 50%;
     margin-bottom: 4px;
   }
+
+  .logo-button {
+    background: none;
+    border: none;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+    left: 20px;
+  }
+  
+  .logo-image {
+    width: 50px; /* 크기 조정 가능 */
+    height: 50px;
+    object-fit: contain;
+    margin-right: 8px;
+  }
+  
   

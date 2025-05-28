@@ -18,63 +18,69 @@ const NaverMapComponent = ({ showDEM, showWatershed, showPollution, showTerrain 
   }, []);
 
   // 2. 지형지도 on/off에 따른 타입 변경 useEffect
-useEffect(() => {
-  if (!mapRef.current) return;
+  useEffect(() => {
+    if (!mapRef.current) return;
 
-  mapRef.current.setMapTypeId(
-    showTerrain
-      ? window.naver.maps.MapTypeId.HYBRID
-      : window.naver.maps.MapTypeId.NORMAL
-  );
-}, [showTerrain]);
+    mapRef.current.setMapTypeId(
+      showTerrain
+        ? window.naver.maps.MapTypeId.HYBRID
+        : window.naver.maps.MapTypeId.NORMAL
+    );
+  }, [showTerrain]);
 
 
   useEffect(() => {
     const drawWatershed = async () => {
       if (!mapRef.current) return;
-
-      if (!showWatershed && watershedPolygons.length > 0) {
-        watershedPolygons.forEach((poly) => poly.setMap(null));
-        setWatershedPolygons([]);
+  
+      // 이미 폴리곤이 있으면 스타일만 업데이트
+      if (watershedPolygons.length > 0) {
+        watershedPolygons.forEach((poly) => {
+          poly.setOptions({
+            fillOpacity: showWatershed ? 0.3 : 0.0,
+            strokeOpacity: showWatershed ? 0.8 : 0.0,
+          });
+        });
         return;
       }
-
-      if (showWatershed && watershedPolygons.length === 0) {
-        try {
-          const res = await fetch("/data/clip.geojson");
-          const geojson = await res.json();
-          setGeoJsonData(geojson);
-
-          const newPolygons = geojson.features.map((feature) => {
-            const coords =
-              feature.geometry.type === "Polygon"
-                ? feature.geometry.coordinates[0]
-                : feature.geometry.coordinates[0][0];
-
-            const path = coords.map(
-              ([lng, lat]) => new window.naver.maps.LatLng(lat, lng)
-            );
-
-            return new window.naver.maps.Polygon({
-              map: mapRef.current,
-              paths: path,
-              strokeColor: "#FF0000",
-              strokeOpacity: 0.8,
-              strokeWeight: 2,
-              fillColor: "#880000",
-              fillOpacity: 0.3,
-            });
+  
+      // 처음 로딩 시 GeoJSON 읽고 폴리곤 생성
+      try {
+        const res = await fetch("/data/clip.geojson");
+        const geojson = await res.json();
+        setGeoJsonData(geojson);
+  
+        const newPolygons = geojson.features.map((feature) => {
+          const coords =
+            feature.geometry.type === "Polygon"
+              ? feature.geometry.coordinates[0]
+              : feature.geometry.coordinates[0][0];
+  
+          const path = coords.map(
+            ([lng, lat]) => new window.naver.maps.LatLng(lat, lng)
+          );
+  
+          return new window.naver.maps.Polygon({
+            map: mapRef.current,
+            paths: path,
+            strokeColor: "#8000FF",
+            strokeOpacity: showWatershed ? 0.8 : 0.0,
+            strokeWeight: 2,
+            fillColor: "#A56AFF",
+            fillOpacity: showWatershed ? 0.3 : 0.0,
           });
-
-          setWatershedPolygons(newPolygons);
-        } catch (err) {
-          console.error("❌ clip2.geojson 로딩 실패:", err);
-        }
+        });
+  
+        setWatershedPolygons(newPolygons);
+      } catch (err) {
+        console.error("❌ clip.geojson 로딩 실패:", err);
       }
     };
-
+  
     drawWatershed();
   }, [showWatershed]);
+  
+
 
   useEffect(() => {
     const loadMarkers = async () => {
