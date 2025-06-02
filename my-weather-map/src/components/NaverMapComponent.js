@@ -116,15 +116,15 @@ const NaverMapComponent = ({ showDEM, showWatershed, showPollution, showTerrain 
               currentLineRef.current.setMap(null);
               currentLineRef.current = null;
             }
-
+          
             try {
               const res = await fetch(`/data/flow/flow_path_${place.id}.geojson`);
               const geojson = await res.json();
-
+          
               const coords = geojson.features[0].geometry.coordinates.map(
                 ([lng, lat]) => new window.naver.maps.LatLng(lat, lng)
               );
-
+          
               const polyline = new window.naver.maps.Polyline({
                 map: mapRef.current,
                 path: coords,
@@ -132,9 +132,9 @@ const NaverMapComponent = ({ showDEM, showWatershed, showPollution, showTerrain 
                 strokeOpacity: 0.9,
                 strokeWeight: 3,
               });
-
+          
               currentLineRef.current = polyline;
-
+          
               const infoHtml = `
                 <div style="padding:8px">
                   <strong>${place.bsnm_nm}</strong><br/>
@@ -144,11 +144,16 @@ const NaverMapComponent = ({ showDEM, showWatershed, showPollution, showTerrain 
                 </div>`;
               infoWindow.setContent(infoHtml);
               infoWindow.open(mapRef.current, marker);
+          
+              // 💡 클릭된 마커 위치로 지도 중심 이동
+              mapRef.current.panTo(marker.getPosition());
+          
             } catch (err) {
               alert("흐름 경로를 불러오지 못했습니다.");
               console.error(err);
             }
           });
+          
 
           newMarkers.push(marker);
         }
