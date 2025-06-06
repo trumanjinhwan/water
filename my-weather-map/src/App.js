@@ -10,6 +10,7 @@ const App = () => {
   const [showWatershed, setShowWatershed] = useState(false);
   const [showPollution, setShowPollution] = useState(false);
   const [showTerrain, setShowTerrain] = useState(false);
+  const [deltaC, setDeltaC] = useState(null); // ΔC 상태
 
   const steps = [
     // {
@@ -57,6 +58,7 @@ const App = () => {
         showWatershed={showWatershed}
         showPollution={showPollution}
         showTerrain={showTerrain}
+        deltaC={deltaC}
       />
 
       <div style={{ position: "absolute", top: 20, left: 20, zIndex: 1000 }}>
@@ -75,7 +77,7 @@ const App = () => {
       </div>
 
       <div style={{ position: "absolute", top: 200, left: 20, zIndex: 1000 }}>
-        <InfoPanel />
+        <InfoPanel setDeltaC={setDeltaC}/>
       </div>
     </div>
   );

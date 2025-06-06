@@ -3,12 +3,13 @@ import image2 from "./svg/image-2.svg";
 import image from "./svg/image.svg";
 import "./InfoPanel.css";
 
-export const InfoPanel = () => {
+export const InfoPanel = ({ setDeltaC }) => {
   const [isVisible, setIsVisible] = useState(true);
   const [temperature, setTemperature] = useState("");
   const [rainfall, setRainfall] = useState("");
   const [humidity, setHumidity] = useState("");
   const [windspeed, setWindspeed] = useState("");
+  const [discharge, setDischarge] = useState(""); // 유출량(Q)
 
   const togglePanel = () => {
     setIsVisible(!isVisible);
@@ -33,6 +34,11 @@ export const InfoPanel = () => {
     if (!windspeed.trim()) {
       alert("풍속을 입력해주세요.");
       document.getElementById("windspeed-input").focus();
+      return;
+    }
+    if (!discharge.trim()) {
+      alert("유출량을 입력해주세요.");
+      document.getElementById("discharge-input").focus();
       return;
     }
 
@@ -60,8 +66,20 @@ export const InfoPanel = () => {
       document.getElementById("windspeed-input").focus();
       return;
     }
+    if (isNaN(Number(discharge))) {
+      alert("유출량을 숫자로 입력하세요.");
+      setDischarge("");
+      document.getElementById("discharge-input").focus();
+      return;
+    }
 
-    console.log(`기온: ${temperature}, 강수량: ${rainfall}, 습도: ${humidity}, 풍속: ${windspeed}`);
+    const ΔC = 0.12 * Number(rainfall)
+             + 0.06 * Number(temperature)
+             - 0.015 * Number(humidity)
+             + 0.05 * Number(windspeed)
+             + Number(discharge);
+
+    setDeltaC(ΔC); // 💡 App.js의 상태 업데이트
   };
 
   return (
@@ -84,11 +102,13 @@ export const InfoPanel = () => {
               <div className="element-2">
                 <input id="rainfall-input" type="text" className="view-3" value={rainfall} onChange={(e) => setRainfall(e.target.value)} />
                 <div className="text-wrapper-2">강수량</div>
+                <div className="text-wrapper-5">mm</div>
               </div>
 
               <div className="element-3">
                 <input id="humidity-input" type="text" className="view-3" value={humidity} onChange={(e) => setHumidity(e.target.value)} />
                 <div className="text-wrapper-2">습도</div>
+                <div className="text-wrapper-6">%</div>
               </div>
 
               <div className="overlap">
@@ -99,8 +119,14 @@ export const InfoPanel = () => {
                 <div className="text-wrapper-4">m/s</div>
               </div>
 
-              <div className="text-wrapper-5">mm</div>
-              <div className="text-wrapper-6">%</div>
+              <div className="element-4">
+                <input id="discharge-input" type="text" className="view-3" value={discharge} onChange={(e) => setDischarge(e.target.value)} />
+                <div className="text-wrapper-2">유출량</div>
+              </div>
+              <div className="text-wrapper-7">kg</div>
+
+              {/* <div className="text-wrapper-5">mm</div>
+              <div className="text-wrapper-6">%</div> */}
 
               <button className="submit-button" onClick={handleSubmit}>입력하기</button>
             </div>

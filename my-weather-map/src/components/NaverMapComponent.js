@@ -1,12 +1,19 @@
 import React, { useEffect, useRef, useState } from "react";
 
-const NaverMapComponent = ({ showDEM, showWatershed, showPollution, showTerrain }) => {
+const NaverMapComponent = ({ showDEM, showWatershed, showPollution, showTerrain, deltaC }) => {
   const [geoJsonData, setGeoJsonData] = useState(null);
   const [watershedPolygons, setWatershedPolygons] = useState([]);
   const [pollutionMarkers, setPollutionMarkers] = useState([]);
   const [demOverlay, setDemOverlay] = useState(null);
   const currentLineRef = useRef(null);
   const mapRef = useRef(null);
+
+  useEffect(() => {
+    if (deltaC !== null) {
+      console.log("수질 변화량 ΔC 수신됨:", deltaC);
+      // 💡 여기에 deltaC에 따른 지도 표시 로직 구현 가능
+    }
+  }, [deltaC]);
 
   useEffect(() => {
     const map = new window.naver.maps.Map("map", {
