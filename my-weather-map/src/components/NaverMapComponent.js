@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import * as turf from "@turf/turf";
 
 const NaverMapComponent = ({ showDEM, showWatershed, showPollution, showTerrain, deltaC }) => {
   const [geoJsonData, setGeoJsonData] = useState(null);
@@ -7,40 +8,47 @@ const NaverMapComponent = ({ showDEM, showWatershed, showPollution, showTerrain,
   const [demOverlay, setDemOverlay] = useState(null);
   const currentLineRef = useRef(null);
   const mapRef = useRef(null);
+  const infoWindowRef = useRef(null);
+  // 🔽 컴포넌트 최상단에 추가
+  const watershedCirclesRef = useRef([]);
+
+  const MAX_DELTA_C = 25;
+
+  const getPollutionRatePercent = (deltaC) => {
+    return Math.min((deltaC / MAX_DELTA_C) * 100, 100);
+  };
+
+  const getPolylineColorByPollution = (percent) => {
+    if (percent >= 91) return "#FF0000";
+    if (percent >= 71) return "#FF8000";
+    if (percent >= 51) return "#00AA00";
+    if (percent >= 30) return "#00CFFF";
+    return "#AAAAAA";
+  };
 
   useEffect(() => {
-    if (deltaC !== null) {
-      console.log("수질 변화량 ΔC 수신됨:", deltaC);
-      // 💡 여기에 deltaC에 따른 지도 표시 로직 구현 가능
-    }
+    console.log("\ud83d\udce1 NaverMapComponent\uc5d0\uc11c \ubc1b\uc740 deltaC:", deltaC);
   }, [deltaC]);
 
   useEffect(() => {
     const map = new window.naver.maps.Map("map", {
       center: new window.naver.maps.LatLng(37.926, 127.75),
       zoom: 13,
-      mapTypeId: window.naver.maps.MapTypeId.NORMAL, // 초기값
+      mapTypeId: window.naver.maps.MapTypeId.NORMAL,
     });
     mapRef.current = map;
   }, []);
 
-  // 2. 지형지도 on/off에 따른 타입 변경 useEffect
   useEffect(() => {
     if (!mapRef.current) return;
-
     mapRef.current.setMapTypeId(
-      showTerrain
-        ? window.naver.maps.MapTypeId.HYBRID
-        : window.naver.maps.MapTypeId.NORMAL
+      showTerrain ? window.naver.maps.MapTypeId.HYBRID : window.naver.maps.MapTypeId.NORMAL
     );
   }, [showTerrain]);
-
 
   useEffect(() => {
     const drawWatershed = async () => {
       if (!mapRef.current) return;
-  
-      // 이미 폴리곤이 있으면 스타일만 업데이트
       if (watershedPolygons.length > 0) {
         watershedPolygons.forEach((poly) => {
           poly.setOptions({
@@ -50,23 +58,22 @@ const NaverMapComponent = ({ showDEM, showWatershed, showPollution, showTerrain,
         });
         return;
       }
-  
-      // 처음 로딩 시 GeoJSON 읽고 폴리곤 생성
+
       try {
         const res = await fetch("/data/clip.geojson");
         const geojson = await res.json();
         setGeoJsonData(geojson);
-  
+
         const newPolygons = geojson.features.map((feature) => {
           const coords =
             feature.geometry.type === "Polygon"
               ? feature.geometry.coordinates[0]
               : feature.geometry.coordinates[0][0];
-  
+
           const path = coords.map(
             ([lng, lat]) => new window.naver.maps.LatLng(lat, lng)
           );
-  
+
           return new window.naver.maps.Polygon({
             map: mapRef.current,
             paths: path,
@@ -77,17 +84,15 @@ const NaverMapComponent = ({ showDEM, showWatershed, showPollution, showTerrain,
             fillOpacity: showWatershed ? 0.3 : 0.0,
           });
         });
-  
+
         setWatershedPolygons(newPolygons);
       } catch (err) {
-        console.error("❌ clip.geojson 로딩 실패:", err);
+        console.error("\u274c clip.geojson \ub85c\ub4dc \uc2e4\ud328:", err);
       }
     };
-  
+
     drawWatershed();
   }, [showWatershed]);
-  
-
 
   useEffect(() => {
     const loadMarkers = async () => {
@@ -116,63 +121,158 @@ const NaverMapComponent = ({ showDEM, showWatershed, showPollution, showTerrain,
             title: place.bsnm_nm,
           });
 
-          const infoWindow = new window.naver.maps.InfoWindow();
-
           window.naver.maps.Event.addListener(marker, "click", async () => {
+
+            // 📌 ΔC 미입력 시 알림 후 조기 반환
+            if (deltaC === null) {
+              alert("변인들을 먼저 입력해주십시오.");
+              return;
+            }
+
+            // ✅ 항상 실행되는 초기화 코드
             if (currentLineRef.current) {
               currentLineRef.current.setMap(null);
               currentLineRef.current = null;
             }
-          
+            if (watershedCirclesRef.current) {
+              watershedCirclesRef.current.forEach(c => c.setMap(null));
+              watershedCirclesRef.current = [];
+            }
+            if (infoWindowRef.current) {
+              infoWindowRef.current.close();
+            }
+
             try {
               const res = await fetch(`/data/flow/flow_path_${place.id}.geojson`);
-              const geojson = await res.json();
-          
-              const coords = geojson.features[0].geometry.coordinates.map(
+              const flowGeojson = await res.json();
+
+              const coords = flowGeojson.features[0].geometry.coordinates.map(
                 ([lng, lat]) => new window.naver.maps.LatLng(lat, lng)
               );
-          
+
+              let intersects = false;
+              let strokeColor = "#AAAAAA";
+              let pollutionPercent = 0;
+
+              if (geoJsonData) {
+                const polygon = turf.featureCollection(geoJsonData.features);
+                const line = turf.lineString(flowGeojson.features[0].geometry.coordinates);
+                intersects = turf.booleanIntersects(polygon, line);
+
+                if (intersects && deltaC !== null) {
+                  pollutionPercent = getPollutionRatePercent(deltaC);
+                  strokeColor = getPolylineColorByPollution(pollutionPercent);
+                }
+
+                // 🔽 마커 클릭 이벤트 내부 try 블록 안 intersect 검사 이후에 추가
+                if (intersects && deltaC !== null) {
+                  pollutionPercent = getPollutionRatePercent(deltaC);
+                  strokeColor = getPolylineColorByPollution(pollutionPercent);
+
+                  let invalidGeometryCount = 0;
+
+                  geoJsonData.features.forEach((feature) => {
+                    const geometry = feature.geometry;
+                    if (!geometry || geometry.coordinates.length === 0) return;
+
+                    let polygons = [];
+
+                    if (geometry.type === "Polygon") {
+                      polygons = [geometry.coordinates];
+                    } else if (geometry.type === "MultiPolygon") {
+                      polygons = geometry.coordinates;
+                    } else {
+                      return; // Unknown geometry type → skip
+                    }
+
+                    polygons.forEach((polyCoords) => {
+                      const poly = turf.polygon(polyCoords);
+                      const intersections = turf.lineIntersect(poly, line);
+
+                      // ✅ 모든 교차점에 원을 그림
+                      intersections.features.forEach((pt) => {
+                        const [lng, lat] = pt.geometry.coordinates;
+                        const centerLatLng = new window.naver.maps.LatLng(lat, lng);
+
+                        const circle = new window.naver.maps.Circle({
+                          map: mapRef.current,
+                          center: centerLatLng,
+                          radius: 300,
+                          strokeColor: strokeColor,
+                          strokeOpacity: 1,
+                          strokeWeight: 1.5,
+                          fillColor: strokeColor,
+                          fillOpacity: 0.3,
+                        });
+
+                        watershedCirclesRef.current.push(circle);
+                      });
+                    });
+                  });
+
+
+
+                  // ✅ 최종 통계 출력
+                  if (invalidGeometryCount > 0) {
+                    console.warn(`⚠️ 총 ${invalidGeometryCount}개의 유효하지 않은 geometry가 존재합니다.`);
+                  }
+
+                }
+              }
+
               const polyline = new window.naver.maps.Polyline({
                 map: mapRef.current,
                 path: coords,
-                strokeColor: "#00AAFF",
+                strokeColor: strokeColor,
                 strokeOpacity: 0.9,
                 strokeWeight: 3,
               });
-          
+
               currentLineRef.current = polyline;
-          
+
               const infoHtml = `
-                <div style="padding:8px">
+                <div style="
+                  background:white;
+                  border:1px solid #888;
+                  border-radius:8px;
+                  padding:10px;
+                  font-size:13px;
+                  line-height:1.5;
+                  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+                  white-space:nowrap;
+                ">
                   <strong>${place.bsnm_nm}</strong><br/>
                   ${place.bsns_detail_road_addr}<br/>
                   ${place.induty_nm}<br/>
-                  예측된 지하수 흐름이 표시되었습니다.
+                  ${intersects ? `오염률: ${pollutionPercent.toFixed(1)}%` : "<span style='color:gray'>하천 유역과 맞닿지 않음</span>"}
                 </div>`;
-              infoWindow.setContent(infoHtml);
+
+              const infoWindow = new window.naver.maps.InfoWindow({
+                content: infoHtml,
+                pixelOffset: new window.naver.maps.Point(0, -60),
+                disableAutoPan: true,
+              });
+
               infoWindow.open(mapRef.current, marker);
-          
-              // 💡 클릭된 마커 위치로 지도 중심 이동
+              infoWindowRef.current = infoWindow;
               mapRef.current.panTo(marker.getPosition());
-          
             } catch (err) {
               alert("흐름 경로를 불러오지 못했습니다.");
               console.error(err);
             }
           });
-          
 
           newMarkers.push(marker);
         }
 
         setPollutionMarkers(newMarkers);
       } catch (err) {
-        console.error("❌ 오염원 API 호출 에러:", err);
+        console.error("\u274c 오염원 API 호출 에러:", err);
       }
     };
 
     loadMarkers();
-  }, [showPollution]);
+  }, [showPollution, geoJsonData, deltaC]);
 
   useEffect(() => {
     if (!mapRef.current) return;
