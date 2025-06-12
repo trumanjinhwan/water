@@ -134,7 +134,7 @@
             </div>
           )}
 
-          <div className="image-wrapper" style={{ left: isVisible ? "258px" : "-30px", top: "30px" }}>
+          <div className="image-wrapper" style={{ left: isVisible ? "258px" : "-30px", top: "70px" }}>
             <button onClick={togglePanel}>
               <img className={`img ${isVisible ? "open" : "closed"}`} alt="Toggle" src={image} />
             </button>
