@@ -25,7 +25,7 @@ const App = () => {
     },
     {
       target: ".weather-form",
-      content: "여기에 날씨 데이터를 입력해주세요.",
+      content: "여기에 오염 변수들을 입력해주세요.",
     },
     {
       target: "#map",

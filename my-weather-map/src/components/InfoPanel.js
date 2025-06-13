@@ -88,7 +88,7 @@
         <div className="panel-wrapper">
           {isVisible && (
             <div className="div weather-form">
-              <div className="text-wrapper">날씨 정보 입력</div>
+              <div className="text-wrapper">오염 변수 입력</div>
               <img className="image" alt="Image" src={image2} />
 
               <div className="view-2">
